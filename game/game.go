@@ -1,6 +1,8 @@
 package game
 
 import (
+	"os"
+	"time"
 	"fmt"
 
 	"github.com/nsf/termbox-go"
@@ -9,6 +11,10 @@ import (
 type Game struct {
 	field Field
 	score int
+}
+type Coordinate struct {
+	x int
+	y int
 }
 
 // StartGame starts the game of snake.
@@ -26,11 +32,6 @@ func StartGame() {
 	// Ensure that termbox always closes
 	defer termbox.Close()
 
-	keyboardChan := make(chan termbox.Key)
-
-	// Watch for player input, and hand out events.
-	go WatchPlayerInput(keyboardChan)
-
 	/*
 	   Order of events:
 	    1. Show intro screen.
@@ -42,33 +43,44 @@ func StartGame() {
         7. Take player input for direction.
 		8. Check if player loses
 	*/
+
+	game := Game {
+		field: InitField(),
+		score: 0,
+	}
+	// Watch for player input.
+	go WatchPlayerInput(game)
 	for {
-		Display()
-		switch <- keyboardChan {
-		case termbox.KeyArrowUp:
-			fmt.Println("up")
+		
+		game.field.Display()
+		game.field.snake.move()
 
-		case termbox.KeyArrowDown:
-			fmt.Println("down")
-
-		case termbox.KeyArrowLeft:
-			fmt.Println("left")
-
-		case termbox.KeyArrowRight:
-			fmt.Println("right")
-
-		case termbox.KeyEsc:
-			return
-		}
+		time.Sleep(1*time.Second)
 	}
 
 }
 
 // WatchPlayerInput watches for player input event
-func WatchPlayerInput(keyboardChan chan termbox.Key) {
+func WatchPlayerInput(game Game) {
 	termbox.SetInputMode(termbox.InputEsc)
 	for {
 		e := termbox.PollEvent()
-		keyboardChan <- e.Key
+		switch e.Key {
+		case termbox.KeyArrowUp:
+			game.field.snake.direction = UP
+
+		case termbox.KeyArrowDown:
+			game.field.snake.direction = DOWN
+
+		case termbox.KeyArrowLeft:
+			game.field.snake.direction = LEFT
+
+		case termbox.KeyArrowRight:
+			game.field.snake.direction = RIGHT
+
+		case termbox.KeyEsc:
+			os.Exit(0)
+			return
+		}
 	}
 }

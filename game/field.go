@@ -12,50 +12,58 @@ type Field struct {
 }
 
 const (
-	fieldWidth = 50
+	fieldWidth  = 50
 	fieldHeight = 30
-	wallColor = termbox.ColorCyan
-	emptyColor = termbox.ColorWhite
-	snakeColor = termbox.ColorRed
+	WallColor   = termbox.ColorCyan
+	EmptyColor  = termbox.ColorWhite
+	SnakeColor  = termbox.ColorRed
 )
 
 var width int
 var height int
 
+func InitField() Field {
+	return Field {
+		food: InitFood(),
+		snake: InitSnake(fieldWidth, fieldHeight),
+		height: fieldHeight,
+		width: fieldWidth,
+	}
+}
+
 // Display draws the field, snake, and food.
-func Display() {
+func (f *Field) Display() {
 	// Clear screen.
-	termbox.Clear(emptyColor,emptyColor)
-	width, height = termbox.Size()
+	termbox.Clear(EmptyColor, EmptyColor)
 	// Make border
-	makeBorder()
-	makeSnake()
-
-
-}
-
-func makeSnake() {
-
-}
-
-func makeBorder() {
-	// Make top
-	for x := 1; x < fieldWidth; x++ {
-		termbox.SetCell(x, fieldHeight, ' ', wallColor, wallColor)
-	}
-	// Make bottom
-	for x := 1; x < fieldWidth; x++ {
-		termbox.SetCell(x, 0, ' ', wallColor, wallColor)
-	}
-	// Make right
-	for y := 1; y < fieldHeight; y++ {
-		termbox.SetCell(fieldWidth, y, ' ', wallColor, wallColor)
-	}
-	// Make left
-	for y := 1; y < fieldHeight; y++ {
-		termbox.SetCell(0, y, ' ', wallColor, wallColor)
-	}
+	drawBorder()
+	drawSnake(&f.snake)
 
 	// Now display it
 	termbox.Flush()
+}
+
+func drawSnake(s *Snake) {
+	for i := 0; i < len(s.body); i++ {
+		termbox.SetCell(s.body[i].x, s.body[i].y, ' ', SnakeColor, SnakeColor)
+	}
+}
+
+func drawBorder() {
+	// Make bottom
+	for x := 1; x < fieldWidth; x++ {
+		termbox.SetCell(x, fieldHeight, ' ', WallColor, WallColor)
+	}
+	// Make top
+	for x := 1; x < fieldWidth; x++ {
+		termbox.SetCell(x, 0, ' ', WallColor, WallColor)
+	}
+	// Make right
+	for y := 1; y < fieldHeight; y++ {
+		termbox.SetCell(fieldWidth, y, ' ', WallColor, WallColor)
+	}
+	// Make left
+	for y := 1; y < fieldHeight; y++ {
+		termbox.SetCell(0, y, ' ', WallColor, WallColor)
+	}
 }
