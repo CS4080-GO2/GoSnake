@@ -49,19 +49,19 @@ func StartGame() {
 		score: 0,
 	}
 	// Watch for player input.
-	go WatchPlayerInput(game)
+	go WatchPlayerInput(&game)
+	game.field.Display()
 	for {
-		
-		game.field.Display()
 		game.field.snake.move()
+		game.field.Display()
 
-		time.Sleep(1*time.Second)
+		time.Sleep(50*time.Millisecond)
 	}
 
 }
 
 // WatchPlayerInput watches for player input event
-func WatchPlayerInput(game Game) {
+func WatchPlayerInput(game *Game) {
 	termbox.SetInputMode(termbox.InputEsc)
 	for {
 		e := termbox.PollEvent()
