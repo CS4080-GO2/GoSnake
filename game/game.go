@@ -48,21 +48,25 @@ func StartGame() {
 		field: InitField(),
 		score: 0,
 	}
+
 	// Watch for player input.
 	go WatchPlayerInput(&game)
+
+	// Display the field
 	game.field.Display()
+
 	for {
 		game.field.snake.move()
 		game.field.Display()
 
-		time.Sleep(50*time.Millisecond)
+		time.Sleep(50 * time.Millisecond)
 	}
-
 }
 
 // WatchPlayerInput watches for player input event
 func WatchPlayerInput(game *Game) {
 	termbox.SetInputMode(termbox.InputEsc)
+
 	for {
 		e := termbox.PollEvent()
 		switch e.Key {
@@ -79,7 +83,6 @@ func WatchPlayerInput(game *Game) {
 			game.field.snake.direction = RIGHT
 
 		case termbox.KeyEsc:
-			os.Exit(0)
 			return
 		}
 	}

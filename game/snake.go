@@ -39,6 +39,7 @@ func InitSnake(w, h int) Snake {
 
 func (s *Snake) move() {
 	head := s.body[0]
+
 	switch s.direction { // Current direction
 	case UP:
 		if termbox.GetCell(head.x, head.y-1).Bg == EmptyColor { // TODO change to pick up food.
