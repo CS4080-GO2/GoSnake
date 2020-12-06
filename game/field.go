@@ -16,7 +16,7 @@ const (
 	fieldHeight = 30
 	WallColor   = termbox.ColorCyan
 	EmptyColor  = termbox.ColorWhite
-	SnakeColor  = termbox.ColorRed
+	SnakeColor  = termbox.ColorBlue
 )
 
 var width int
