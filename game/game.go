@@ -1,7 +1,7 @@
 package game
 
 import (
-	"os"
+	// "os"
 	"time"
 	"fmt"
 
@@ -19,7 +19,7 @@ type Coordinate struct {
 
 // StartGame starts the game of snake.
 func StartGame() {
-	fmt.Println("Starting game")
+	fmt.Println("Starting game!!!")
 
 	// Initualizes termbox library
 	err := termbox.Init()
