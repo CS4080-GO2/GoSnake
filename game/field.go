@@ -35,6 +35,7 @@ func InitField() Field {
 func (f *Field) Display() {
 	// Clear screen.
 	termbox.Clear(EmptyColor, EmptyColor)
+
 	// Make border
 	drawBorder()
 	drawSnake(&f.snake)
