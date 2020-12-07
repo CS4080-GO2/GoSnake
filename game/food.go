@@ -3,6 +3,8 @@ package game
 import (
 	"math/rand"
 )
+
+
 // Thanks to https://unicode-table.com/en/#supplemental-symbols-and-pictographs
 var foodList = []rune{
 	'🥓',

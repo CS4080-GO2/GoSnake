@@ -63,11 +63,11 @@ func (s *Snake) CheckHeadPosition(c Coordinate) bool {
 func (s *Snake) AvailablePosition(c Coordinate) bool {
 	// Traverse through snake body to see if the randomly selected Coordinate
 	// is available
-	for _, body := range s.body {
+	for _, b := range s.body {
 		// Check if the coord of the head match one coord in body
-		if c.x != body.x && c.y != body.y {
-			return true
+		if c.x == b.x && c.y == b.y {
+			return false
 		}
 	}
-	return false
+	return true
 }

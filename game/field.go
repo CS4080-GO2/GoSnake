@@ -9,11 +9,13 @@ import (
 )
 
 type Field struct {
-	food   	Food
-	snake  	Snake
-	height 	int
-	width	int
-	points	int
+	food   		Food			// The food.
+	obstacle	Obstacle		// The obstacle
+	obsList		[]Coordinate	// List of all obstacles coordinates
+	snake  		Snake			// The object being controled
+	height 		int				// Height of the field
+	width		int				// Width of the field
+	points		int				// The Score
 }
 
 const (
@@ -26,6 +28,8 @@ const (
 
 var width int
 var height int
+var pointCap int = 500		// For bonus rounds with obstacles
+var numObs int = 1
 
 func InitField() Field {
 	rand.Seed(time.Now().UnixNano())
@@ -48,10 +52,40 @@ func (f *Field) Display() {
 
 	// Make border
 	DrawBorder()
+
+	// Displaying food on the field
 	DrawFood(f.food)
+
+	// Display the score
 	DrawScore(f.points)
+
+	// Msg informing players on how to exit game
 	DrawMsg(fieldWidth + 5, fieldHeight - 1, "Press ESC to exit")
+
+	// display the snake on the field
 	drawSnake(&f.snake)
+
+	// Bonus rounds!
+	if f.points >= 500 {
+		if f.points >= pointCap {
+			f.obsList = nil
+
+			for i := 0; i < numObs; i++ {
+				// Drop the obstacle
+				f.PlaceObstacle()
+				f.obsList = append(f.obsList, f.obstacle.coord)
+			}
+
+			pointCap += 500
+			numObs += 1
+		}
+
+		// Displaying the obstacles
+		f.DrawObstacles()
+
+		// Display New message informing player what is happening
+		DrawMsg(fieldWidth + 5, fieldHeight / 2, "AVOID THE BONES!!!")
+	}
 
 	// Now display it
 	termbox.Flush()
@@ -122,6 +156,12 @@ func (f *Field) move() {
 		f.PlaceFood()
 	}
 
+	if f.points >= 500 {
+		if f.HitObstacle(c) {
+			GameOver("Oh no! You ate the bone!", f.points)
+		}
+	}
+
 	// If the snake exit the field then display "Game Over"
 	f.SnakeExit()
 }
@@ -151,6 +191,7 @@ func DrawMsg(x, y int, msg string) {
 	}
 }
 
+// Find an available space to put the food
 func (f *Field) PlaceFood() {
 	// Declare x and y coord for the rand food drop
 	var randCoord Coordinate
@@ -161,20 +202,83 @@ func (f *Field) PlaceFood() {
 
 		randCoord = Coordinate{x: x, y: y}
 		if f.snake.AvailablePosition(randCoord) {
-			break
+			if f.points >= 500 {
+				if f.NotInObsPosition(randCoord) {
+					break
+				}
+			} else {
+				break
+			}
 		}
 	}
 
 	f.food = DropFoodAt(randCoord)
 }
 
+// Find an available space to put the obstacle
+func (f *Field) PlaceObstacle() {
+	var randCoord Coordinate
 
+	for {
+		x := rand.Intn(fieldWidth - 2) + 1
+		y := rand.Intn(fieldHeight - 2) + 1
+
+		randCoord = Coordinate{x: x, y: y}
+
+		if f.snake.AvailablePosition(randCoord) {
+			if randCoord != f.food.coord {
+				break
+			}
+		}
+	}
+
+	f.obstacle = ObstacleAt(randCoord)
+}
+
+
+// Function to display the food on the field
 func DrawFood(f Food) {
 	clr := termbox.ColorDefault
 	termbox.SetCell(f.coord.x, f.coord.y, f.char, clr, clr)
 }
 
+// Function to display the score
 func DrawScore(score int) {
 	msg := fmt.Sprintf("Score: %v", score)
 	DrawMsg(fieldWidth + 5, 1, msg)	// Display the score
+}
+
+// Function to display the obstacles
+func (f *Field) DrawObstacles() {
+	clr := termbox.ColorDefault
+	for i := 0; i < len(f.obsList); i++ {
+		curCoord := f.obsList[i]
+		termbox.SetCell(
+			curCoord.x,
+			curCoord.y,
+			f.obstacle.char,
+			clr,
+			clr)
+	}
+}
+
+// Function used in food drops. Makes sure that food is not in obstacle
+func (f *Field) NotInObsPosition(c Coordinate) bool {
+	for i := 0; i < len(f.obsList); i++ {
+		if c == f.obsList[i] {
+			return false
+		}
+	}
+	return true
+}
+
+// Check if the snake ate the obstacle
+func (f *Field) HitObstacle(c Coordinate) bool {
+	// Check all Coordinates of the obstacles
+	for i := 0; i < len(f.obsList); i++ {
+		if c == f.obsList[i] {
+			return true
+		}
+	}
+	return false
 }
