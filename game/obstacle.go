@@ -14,7 +14,15 @@ type Obstacle struct {
 // Function that drops obstacles on the field
 func ObstacleAt(c Coordinate) Obstacle {
 	return Obstacle{
-		char:	obstacleList[0],
+		char:	CharObstacle(),
 		coord:	c,
 	}
+}
+
+func CharObstacle() rune {
+    if RuneSupport() {
+        return obstacleList[0]
+    }
+
+    return 'X'
 }

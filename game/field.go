@@ -84,7 +84,11 @@ func (f *Field) Display() {
 		f.DrawObstacles()
 
 		// Display New message informing player what is happening
-		DrawMsg(fieldWidth + 5, fieldHeight / 2, "AVOID THE BONES!!!")
+		if RuneSupport() {
+			DrawMsg(fieldWidth + 5, fieldHeight / 2, "AVOID THE BONES!!!")
+		} else {
+			DrawMsg(fieldWidth + 5, fieldHeight / 2, "AVOID THE X!!!")
+		}
 	}
 
 	// Now display it
