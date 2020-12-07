@@ -11,7 +11,6 @@ import (
 
 type Game struct {
 	field	Field
-	score	int
 }
 
 type Coordinate struct {
@@ -50,7 +49,6 @@ func StartGame() {
 
 	game := Game {
 		field:	InitField(),
-		score:	0,
 	}
 
 	// Watch for player input.
@@ -130,11 +128,12 @@ func QuitGame() {
 
 
 // Function for when the player lost
-func GameOver(reason string) {
+func GameOver(reason string, score int) {
 	// Close the termbox
 	termbox.Close()
 
 	fmt.Println("Game Over!", reason)
+	fmt.Println("Your score is ", score, "points!\n")
 
 	// Close program without error
 	os.Exit(0)

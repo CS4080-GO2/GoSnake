@@ -111,7 +111,7 @@ func (f *Field) move() {
 
 	if f.snake.CheckHeadPosition(c) {	// Check if head position is on body
 		// End the game, since head hit body
-		GameOver("You hit your body!")
+		GameOver("You hit your body!", f.points)
 	}
 
 	// If the snake ate the food
@@ -138,7 +138,7 @@ func (f *Field) SnakeExit() {
 	if head.x >= fieldWidth || head.y >= fieldHeight ||
 		head.x <= 0 || head.y <= 0 {
 		// If the leaves the field, it's game over
-		GameOver("You're leaving the field?!")
+		GameOver("You're leaving the field?!", f.points)
 	}
 }
 
