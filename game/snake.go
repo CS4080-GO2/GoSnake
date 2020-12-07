@@ -4,7 +4,7 @@ package game
 type direction int
 
 const InitialSnakeLength = 4
-const MAX_SPEED = 50
+const MAX_SPEED = 60
 
 // Snake the actual snake
 type Snake struct {

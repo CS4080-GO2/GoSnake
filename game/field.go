@@ -60,52 +60,14 @@ func (f *Field) Display() {
 	DrawScore(f.points)
 
 	// Msg informing players on how to exit game
+	f.DrawAchievements()
 	DrawMsg(fieldWidth + 5, fieldHeight - 1, "Press ESC to exit")
 
 	// display the snake on the field
 	drawSnake(&f.snake)
 
-	// Bonus rounds!
 	if f.points >= 500 {
-		if f.points >= pointCap {
-			f.obsList = nil
-
-			for i := 0; i < numObs; i++ {
-				// Drop the obstacle
-				f.PlaceObstacle()
-				f.obsList = append(f.obsList, f.obstacle.coord)
-			}
-
-			pointCap += 500
-			numObs += 1
-
-			// Make the snake move faster
-			f.snake.IncreaseSpeed()
-		}
-
-		// Displaying the obstacles
-		f.DrawObstacles()
-
-		// Display New message informing player what is happening
-		if RuneSupport() {
-			DrawMsg(fieldWidth + 5, fieldHeight / 2, "AVOID THE BONES!!!")
-		} else {
-			DrawMsg(fieldWidth + 5, fieldHeight / 2, "AVOID THE X!!!")
-		}
-
-		// Once player reach 5000 points, make the game harder by
-		// making the walls invisible
-		if f.points >= 5000 {
-			// Messages to the players
-			msg1 := "WHERE ARE THE WALLS?!?!"
-			msg2 := "The walls are now invisible."
-			msg3 := "Be careful where you're going."
-
-			// Display the messages
-			DrawMsg(fieldWidth + 5, (fieldHeight / 2) + 2, msg1)
-			DrawMsg(fieldWidth + 5, (fieldHeight / 2) + 4, msg2)
-			DrawMsg(fieldWidth + 5, (fieldHeight / 2) + 5, msg3)
-		}
+		f.BonusRounds()
 	}
 
 	// Now display it
@@ -122,7 +84,7 @@ func (f *Field) DrawBorder() {
 	width, height = termbox.Size()
 	color := WallColor
 
-	if f.points < 5000 {
+	if f.points < 3000 {
 		colorVal := (f.points / 500) % 5
 		switch colorVal {
 			case 0:
@@ -301,7 +263,7 @@ func DrawFood(f Food) {
 // Function to display the score
 func DrawScore(score int) {
 	msg := fmt.Sprintf("Score: %v", score)
-	DrawMsg(fieldWidth + 5, 1, msg)	// Display the score
+	DrawMsg(fieldWidth + 5, fieldHeight - 3, msg)	// Display the score
 }
 
 // Function to display the obstacles
@@ -337,4 +299,69 @@ func (f *Field) HitObstacle(c Coordinate) bool {
 		}
 	}
 	return false
+}
+
+func (f *Field) BonusRounds() {
+	if f.points >= pointCap {
+		f.obsList = nil
+
+		for i := 0; i < numObs; i++ {
+			// Drop the obstacle
+			f.PlaceObstacle()
+			f.obsList = append(f.obsList, f.obstacle.coord)
+		}
+
+		pointCap += 500
+		numObs += 1
+
+		// Make the snake move faster
+		f.snake.IncreaseSpeed()
+	}
+
+	// Displaying the obstacles
+	f.DrawObstacles()
+
+	// Display New message informing player what is happening
+	if RuneSupport() {
+		DrawMsg(fieldWidth + 5, fieldHeight / 2, "AVOID THE BONES!!!")
+	} else {
+		DrawMsg(fieldWidth + 5, fieldHeight / 2, "AVOID THE X!!!")
+	}
+
+	// Once player reach 5000 points, make the game harder by
+	// making the walls invisible
+	if f.points >= 3000 {
+		// Messages to the players
+		msg1 := "WHERE ARE THE WALLS?!?!"
+		msg2 := "The walls are now invisible."
+		msg3 := "Be careful where you're going."
+
+		// Display the messages
+		DrawMsg(fieldWidth + 5, (fieldHeight / 2) + 2, msg1)
+		DrawMsg(fieldWidth + 5, (fieldHeight / 2) + 4, msg2)
+		DrawMsg(fieldWidth + 5, (fieldHeight / 2) + 5, msg3)
+	}
+}
+
+func (f *Field) DrawAchievements() {
+	// Display the Title
+	DrawMsg(fieldWidth + 5, 1, "3 Hidden Achievements:")
+
+	if f.points >= 500 {
+		msg := "Achievement 1: \"Found Obstacles\" has been achieved!"
+		DrawMsg(fieldWidth + 5, 2, msg)
+	}
+
+	if f.points >= 2000 {
+		msg := "Achievement 2: \"Snake Top Speed\" has been achieved!"
+		DrawMsg(fieldWidth + 5, 3, msg)
+	}
+
+	if f.points >= 3000 {
+		msg := "Achievement 3: \"invisible Walls Found\" has been achieved!"
+		DrawMsg(fieldWidth + 5, 4, msg)
+
+		GzMsg := "CONGRATULATION! All 3 hidden achievements were found!"
+		DrawMsg(fieldWidth + 5, 6, GzMsg)
+	}
 }
