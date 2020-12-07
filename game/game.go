@@ -1,26 +1,30 @@
 package game
 
 import (
-	// "os"
+	"os"
 	"time"
 	"fmt"
 
 	"github.com/nsf/termbox-go"
 )
 
+
 type Game struct {
-	field Field
-	score int
+	field	Field
+	score	int
 }
+
 type Coordinate struct {
 	x int
 	y int
 }
 
+var (
+	cDir = UP
+)
+
 // StartGame starts the game of snake.
 func StartGame() {
-	fmt.Println("Starting game")
-
 	// Initualizes termbox library
 	err := termbox.Init()
 
@@ -45,8 +49,8 @@ func StartGame() {
 	*/
 
 	game := Game {
-		field: InitField(),
-		score: 0,
+		field:	InitField(),
+		score:	0,
 	}
 
 	// Watch for player input.
@@ -56,10 +60,10 @@ func StartGame() {
 	game.field.Display()
 
 	for {
-		game.field.snake.move()
+		game.field.move()
 		game.field.Display()
 
-		time.Sleep(50 * time.Millisecond)
+		time.Sleep(100 * time.Millisecond)
 	}
 }
 
@@ -69,21 +73,69 @@ func WatchPlayerInput(game *Game) {
 
 	for {
 		e := termbox.PollEvent()
+
+		// The current direction of the snake
+		curDir := game.field.snake.direction
+
 		switch e.Key {
 		case termbox.KeyArrowUp:
-			game.field.snake.direction = UP
+			// The if statement is so that the snake doesn't go
+			// backwards
+
+			if curDir == DOWN {
+				game.field.snake.direction = DOWN
+			} else {
+				game.field.snake.direction = UP
+			}
 
 		case termbox.KeyArrowDown:
-			game.field.snake.direction = DOWN
+			if curDir == UP {
+				game.field.snake.direction = UP
+			} else {
+				game.field.snake.direction = DOWN
+			}
 
 		case termbox.KeyArrowLeft:
-			game.field.snake.direction = LEFT
+			if curDir == RIGHT {
+				game.field.snake.direction = RIGHT
+			} else {
+				game.field.snake.direction = LEFT
+			}
 
 		case termbox.KeyArrowRight:
-			game.field.snake.direction = RIGHT
+			if curDir == LEFT {
+				game.field.snake.direction = LEFT
+			} else {
+				game.field.snake.direction = RIGHT
+			}
 
 		case termbox.KeyEsc:
+			QuitGame()
 			return
 		}
 	}
+}
+
+// Function used to close the game when player press esc key
+func QuitGame() {
+	// Close the termbox
+	termbox.Close()
+
+	// Display message to player
+	fmt.Println("Thanks for playing!!")
+
+	// Close program without error
+	os.Exit(0)
+}
+
+
+// Function for when the player lost
+func GameOver() {
+	// Close the termbox
+	termbox.Close()
+
+	fmt.Println("Game Over")
+
+	// Close program without error
+	os.Exit(0)
 }
