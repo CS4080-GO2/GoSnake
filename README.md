@@ -8,3 +8,9 @@ go get -u github.com/nsf/termbox-go
 go get -u github.com/CS4080-GO2/GoSnake
 go get -u github.com/mattn/go-runewidth
 ```
+
+## How to Run
+Run the command below to run game
+```
+go run main.go
+```
