@@ -51,7 +51,7 @@ func (f *Field) Display() {
 	termbox.Clear(EmptyColor, EmptyColor)
 
 	// Make border
-	DrawBorder()
+	f.DrawBorder()
 
 	// Displaying food on the field
 	DrawFood(f.food)
@@ -101,27 +101,44 @@ func drawSnake(s *Snake) {
 	}
 }
 
-func DrawBorder() {
+func (f *Field) DrawBorder() {
 	width, height = termbox.Size()
+
+	colorVal := f.points/500
+	
+	color := WallColor
+
+	switch colorVal {
+		case 0:
+			color = termbox.ColorWhite
+		case 1:
+			color = termbox.ColorYellow
+		case 2:
+			color = termbox.ColorGreen
+		case 3:
+			color = termbox.ColorBlue
+		case 4:
+			color = termbox.ColorMagenta
+	}
 
 	// Make bottom
 	for x := 0; x < fieldWidth + 1; x++ {
-		termbox.SetCell(x, fieldHeight, ' ', WallColor, WallColor)
+		termbox.SetCell(x, fieldHeight, ' ', color, color)
 	}
 
 	// Make top
 	for x := 0; x < fieldWidth + 1; x++ {
-		termbox.SetCell(x, 0, ' ', WallColor, WallColor)
+		termbox.SetCell(x, 0, ' ', color, color)
 	}
 
 	// Make right
 	for y := 1; y < fieldHeight; y++ {
-		termbox.SetCell(fieldWidth, y, ' ', WallColor, WallColor)
+		termbox.SetCell(fieldWidth, y, ' ', color, color)
 	}
 
 	// Make left
 	for y := 1; y < fieldHeight; y++ {
-		termbox.SetCell(0, y, ' ', WallColor, WallColor)
+		termbox.SetCell(0, y, ' ', color, color)
 	}
 }
 
