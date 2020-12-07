@@ -153,17 +153,24 @@ func (f *Field) move() {
 	}
 
 	// If the snake ate the food
-	if c == f.food.coord ||
+	if RuneSupport() {
+		if c == f.food.coord ||
 		((c.x == f.food.coord.x + 1) && c.y == f.food.coord.y) {
-		go f.AddPoint(100)
-		f.snake.length += 1
-		f.snake.body = append(f.snake.body, c)
-		f.PlaceFood()
+			go f.AddPoint(100, c)
+		}
+	} else {
+		if c == f.food.coord {
+			go f.AddPoint(100, c)
+		}
 	}
 
 	if f.points >= 500 {
 		if f.HitObstacle(c) {
-			GameOver("Oh no! You ate the bone!", f.points)
+			if RuneSupport() {
+				GameOver("Oh no! You ate the bone!", f.points)
+			} else {
+				GameOver("Oh no! You hit the X!", f.points)
+			}
 		}
 	}
 
@@ -172,8 +179,11 @@ func (f *Field) move() {
 }
 
 // Need to use goroutine to add the point
-func (f *Field) AddPoint(point int) {
+func (f *Field) AddPoint(point int, c Coordinate) {
 	f.points += 100
+	f.snake.length += 1
+	f.snake.body = append(f.snake.body, c)
+	f.PlaceFood()
 }
 
 // Function for when the snake leaves the field
