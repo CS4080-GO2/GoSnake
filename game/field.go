@@ -78,6 +78,9 @@ func (f *Field) Display() {
 
 			pointCap += 500
 			numObs += 1
+
+			// Make the snake move faster
+			f.snake.IncreaseSpeed()
 		}
 
 		// Displaying the obstacles
@@ -88,6 +91,20 @@ func (f *Field) Display() {
 			DrawMsg(fieldWidth + 5, fieldHeight / 2, "AVOID THE BONES!!!")
 		} else {
 			DrawMsg(fieldWidth + 5, fieldHeight / 2, "AVOID THE X!!!")
+		}
+
+		// Once player reach 5000 points, make the game harder by
+		// making the walls invisible
+		if f.points >= 5000 {
+			// Messages to the players
+			msg1 := "WHERE ARE THE WALLS?!?!"
+			msg2 := "The walls are now invisible."
+			msg3 := "Be careful where you're going."
+
+			// Display the messages
+			DrawMsg(fieldWidth + 5, (fieldHeight / 2) + 2, msg1)
+			DrawMsg(fieldWidth + 5, (fieldHeight / 2) + 4, msg2)
+			DrawMsg(fieldWidth + 5, (fieldHeight / 2) + 5, msg3)
 		}
 	}
 
@@ -103,22 +120,24 @@ func drawSnake(s *Snake) {
 
 func (f *Field) DrawBorder() {
 	width, height = termbox.Size()
-
-	colorVal := (f.points / 500) % 5
-
 	color := WallColor
 
-	switch colorVal {
-		case 0:
-			color = termbox.ColorWhite
-		case 1:
-			color = termbox.ColorYellow
-		case 2:
-			color = termbox.ColorGreen
-		case 3:
-			color = termbox.ColorBlue
-		case 4:
-			color = termbox.ColorMagenta
+	if f.points < 5000 {
+		colorVal := (f.points / 500) % 5
+		switch colorVal {
+			case 0:
+				color = termbox.ColorWhite
+			case 1:
+				color = termbox.ColorYellow
+			case 2:
+				color = termbox.ColorGreen
+			case 3:
+				color = termbox.ColorBlue
+			case 4:
+				color = termbox.ColorMagenta
+		}
+	} else {
+		color = termbox.ColorDefault
 	}
 
 	// Make bottom

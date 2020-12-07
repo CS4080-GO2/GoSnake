@@ -4,12 +4,14 @@ package game
 type direction int
 
 const InitialSnakeLength = 4
+const MAX_SPEED = 50
 
 // Snake the actual snake
 type Snake struct {
-	body      []Coordinate // Snake body
-	length    int          // Snake Length
-	direction direction    // Direction snake is facing
+	body      	[]Coordinate // Snake body
+	length    	int          // Snake Length
+	direction 	direction    // Direction snake is facing
+	speed		int
 }
 
 // Got help from https://programming.guide/go/define-enumeration-string.html and https://golangbyexample.com/iota-in-golang/
@@ -28,9 +30,10 @@ func InitSnake(w, h int) Snake {
 	}
 
 	return Snake{
-		body:      temp,
-		length:    InitialSnakeLength,
-		direction: UP,
+		body:      	temp,
+		length:    	InitialSnakeLength,
+		direction: 	UP,
+		speed:		100,
 	}
 }
 
@@ -70,4 +73,10 @@ func (s *Snake) AvailablePosition(c Coordinate) bool {
 		}
 	}
 	return true
+}
+
+func (s *Snake) IncreaseSpeed() {
+	if s.speed > MAX_SPEED {
+		s.speed -= 10
+	}
 }

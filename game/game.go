@@ -61,7 +61,9 @@ func StartGame() {
 		game.field.move()
 		game.field.Display()
 
-		time.Sleep(100 * time.Millisecond)
+		// So that we can increase the speed of the snake
+		t := time.Duration(game.field.snake.speed)
+		time.Sleep(t * time.Millisecond)
 	}
 }
 
