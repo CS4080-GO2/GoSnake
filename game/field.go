@@ -1,7 +1,6 @@
 package game
 
 import (
-	"os"
 	"github.com/nsf/termbox-go"
 )
 
@@ -14,7 +13,7 @@ type Field struct {
 
 const (
 	fieldWidth  = 50
-	fieldHeight = 22
+	fieldHeight = 20
 	WallColor   = termbox.ColorCyan
 	EmptyColor  = termbox.ColorDefault
 	SnakeColor  = termbox.ColorRed
@@ -24,12 +23,14 @@ var width int
 var height int
 
 func InitField() Field {
-	return Field {
-		food: InitFood(),
-		snake: InitSnake(fieldWidth, fieldHeight),
+	f := Field {
+		food: 	InitFood(),
+		snake: 	InitSnake(fieldWidth, fieldHeight),
 		height: fieldHeight,
-		width: fieldWidth,
+		width: 	fieldWidth,
 	}
+
+	return f
 }
 
 // Display draws the field, snake, and food.
@@ -75,36 +76,9 @@ func drawBorder() {
 	}
 }
 
+// Function for snake movement
 func (f *Field) move() {
 	head := f.snake.body[0]
-	c := Coordinate{x: head.x, y: head.y}
-
-	// switch s.direction { // Current direction
-	// case UP:
-	// 	if termbox.GetCell(head.x, head.y-1).Bg == EmptyColor { // TODO change to pick up food.
-	// 		s.moveBody(Coordinate{x: head.x, y: head.y - 1})
-	// 	} else {
-	// 		// Collision
-	// 	}
-	// case DOWN:
-	// 	if termbox.GetCell(head.x, head.y+1).Bg == EmptyColor { // TODO change to pick up food.
-	// 		s.moveBody(Coordinate{x: head.x, y: head.y + 1})
-	// 	} else {
-	// 		// Collision
-	// 	}
-	// case LEFT:
-	// 	if termbox.GetCell(head.x-1, head.y).Bg == EmptyColor { // TODO change to pick up food.
-	// 		s.moveBody(Coordinate{x: head.x - 1, y: head.y})
-	// 	} else {
-	// 		// Collision
-	// 	}
-	// case RIGHT:
-	// 	if termbox.GetCell(head.x+1, head.y).Bg == EmptyColor { // TODO change to pick up food.
-	// 		s.moveBody(Coordinate{x: head.x + 1, y: head.y})
-	// 	} else {
-	// 		// Collision
-	// 	}
-	// }
 
 	switch f.snake.direction {
 	case UP:
@@ -117,13 +91,11 @@ func (f *Field) move() {
 		f.snake.moveBody(Coordinate{x: head.x + 1, y: head.y})
 	}
 
-	// Check if the head is on the body
-	if f.snake.headOnBody(c) {
-		os.Exit(0)
-	}
+	// Check if the snake hit its body
 
+
+	// If the snake exit the field then display "Game Over"
 	f.SnakeExit()
-
 }
 
 // Function for when the snake leaves the field
@@ -132,6 +104,7 @@ func (f * Field) SnakeExit() {
 
 	if head.x >= fieldWidth || head.y >= fieldHeight ||
 		head.x <= 0 || head.y <= 0 {
+		// If the leaves the field, it's game over
 		GameOver()
 	}
 }
