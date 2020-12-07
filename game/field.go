@@ -149,7 +149,8 @@ func (f *Field) move() {
 	}
 
 	// If the snake ate the food
-	if c == f.food.coord {
+	if c == f.food.coord ||
+		((c.x == f.food.coord.x + 1) && c.y == f.food.coord.y) {
 		go f.AddPoint(100)
 		f.snake.length += 1
 		f.snake.body = append(f.snake.body, c)
@@ -240,6 +241,11 @@ func (f *Field) PlaceObstacle() {
 func DrawFood(f Food) {
 	clr := termbox.ColorDefault
 	termbox.SetCell(f.coord.x, f.coord.y, f.char, clr, clr)
+
+
+	// termbox.Close()
+	// fmt.Println("Rune Width:  ", rune.RuneWidth(f.char))
+	// fmt.Println("food x:  ", f.coord.x)
 }
 
 // Function to display the score
