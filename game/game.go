@@ -130,11 +130,11 @@ func QuitGame() {
 
 
 // Function for when the player lost
-func GameOver() {
+func GameOver(reason string) {
 	// Close the termbox
 	termbox.Close()
 
-	fmt.Println("Game Over")
+	fmt.Println("Game Over!", reason)
 
 	// Close program without error
 	os.Exit(0)

@@ -45,3 +45,29 @@ func (s *Snake) moveBody(coord Coordinate) {
 
 	s.body = temp
 }
+
+// Function to check if the Coordinate is on the snake body
+func (s *Snake) CheckHeadPosition(c Coordinate) bool {
+	// Start at s.body[1:] since we want to check the body not including the
+	// head
+	for _, body := range s.body[1:] {
+		// Check if the coord of the head match one coord in body
+		if c.x == body.x && c.y == body.y {
+			return true
+		}
+	}
+	return false
+}
+
+// Check body position for random food drops
+func (s *Snake) AvailablePosition(c Coordinate) bool {
+	// Traverse through snake body to see if the randomly selected Coordinate
+	// is available
+	for _, body := range s.body {
+		// Check if the coord of the head match one coord in body
+		if c.x != body.x && c.y != body.y {
+			return true
+		}
+	}
+	return false
+}
