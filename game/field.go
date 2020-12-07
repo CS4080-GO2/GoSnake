@@ -104,8 +104,8 @@ func drawSnake(s *Snake) {
 func (f *Field) DrawBorder() {
 	width, height = termbox.Size()
 
-	colorVal := f.points/500
-	
+	colorVal := (f.points / 500) % 5
+
 	color := WallColor
 
 	switch colorVal {
